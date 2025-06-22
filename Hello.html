@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    (function() {
+      emailjs.init("YOUR_PUBLIC_KEY"); // 🔁 Replace with your EmailJS Public Key
+    })();
+  </script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #f9f9f9, #e0e0e0);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 5rem;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #fff;
+      background-color: #007bff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
+      user-select: none;
+    }
+
+    p:hover { transform: scale(1.05); background-color: #0056b3; }
+    p:active { transform: scale(0.97); }
+
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #modalBox {
+      background-color: #ffffff;
+      padding: 30px 20px 50px;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    #modalBox h2 {
+      margin-top: 0;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .modal-button {
+      margin: 12px 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .modal-button:active {
+      transform: scale(0.95);
+    }
+
+    .modal-button.yes {
+      background-color: #28a745;
+    }
+
+    .modal-button.yes:hover {
+      background-color: #218838;
+    }
+
+    .modal-button.no {
+      background-color: #dc3545;
+      position: fixed;
+      z-index: 1001;
+    }
+
+    .modal-button.no:hover {
+      background-color: #c82333;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-6px, 0); }
+      50% { transform: translate(6px, 0); }
+      75% { transform: translate(-6px, 0); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @media (max-width: 500px) {
+      .modal-button {
+        font-size: 14px;
+        padding: 10px 16px;
+      }
+
+      #modalBox {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello</h1>
+  <p onclick="openModal()">This is a message</p>
+
+  <!-- Modal -->
+  <div id="modalOverlay">
+    <div id="modalBox">
+      <h2>Are you sure?</h2>
+      <button class="modal-button yes" id="yesButton" onclick="handleYes()">Yes</button>
+      <button class="modal-button no" id="noButton">No</button>
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById("modalOverlay").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modalOverlay").style.display = "none";
+    }
+
+    function handleYes() {
+      alert("Okie, tenkyuu"); // Step 1: Show message
+
+      // Step 2: Send email using EmailJS
+      emailjs.send("hello_service", "template_4ie24w4", {
+        message: "She clicked Yes"
+      }).then(function(response) {
+        console.log("Email sent!", response.status, response.text);
+      }, function(error) {
+        console.error("Failed to send email:", error);
+      });
+
+      closeModal(); // Optional: close modal after sending
+    }
+
+    const noBtn = document.getElementById("noButton");
+    const yesBtn = document.getElementById("yesButton");
+
+    function moveNoButton() {
+      const btnWidth = noBtn.offsetWidth;
+      const btnHeight = noBtn.offsetHeight;
+      const maxX = window.innerWidth - btnWidth;
+      const maxY = window.innerHeight - btnHeight;
+
+      const randX = Math.floor(Math.random() * maxX);
+      const randY = Math.floor(Math.random() * maxY);
+
+      noBtn.style.left = `${randX}px`;
+      noBtn.style.top = `${randY}px`;
+
+      noBtn.classList.remove("shake");
+      void noBtn.offsetWidth;
+      noBtn.classList.add("shake");
+    }
+
+    noBtn.addEventListener("mouseover", moveNoButton);
+    noBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      alert("😏 Nice try, but you can't click No!");
+      moveNoButton();
+    });
+    noBtn.addEventListener("touchstart", function(e) {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    // Optional: shake Yes button too
+    yesBtn.addEventListener("mouseover", function() {
+      yesBtn.classList.remove("shake");
+      void yesBtn.offsetWidth;
+      yesBtn.classList.add("shake");
+    });
+  </script>
+
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function() {
+    emailjs.init("FMVx-GxuJ40AIOkaZ"); // Replace with your EmailJS Public Key
+  })();
+</script>
+
+</body>
+</html>
